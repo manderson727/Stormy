@@ -1,4 +1,4 @@
-package com.manderson.stormy;
+package com.manderson.stormy.ui;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

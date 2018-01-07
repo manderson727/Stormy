@@ -10,7 +10,7 @@
     android:paddingTop="16dp"
     android:paddingBottom="16dp"
     android:background="#FC970B"
-    tools:context="com.manderson.stormy.MainActivity">
+    tools:context="com.manderson.stormy.ui.MainActivity">
 
 
     <TextView

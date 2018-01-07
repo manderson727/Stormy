@@ -1,4 +1,6 @@
-package com.manderson.stormy;
+package com.manderson.stormy.weather;
+
+import com.manderson.stormy.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -8,7 +10,7 @@ import java.util.TimeZone;
  * Created by manderson on 12/21/2017.
  */
 
-public class CurrentWeather {
+public class Current {
     private String mIcon;
     private long mTime;
     private double mTemperature;
