@@ -1,11 +1,16 @@
 package com.manderson.stormy;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -25,18 +30,63 @@ public class MainActivity extends AppCompatActivity {
 
     private CurrentWeather mCurrentWeather;
 
+//    @BindView(R.id.timeLabel) TextView mTimeLabel;
+//    @BindView(R.id.temperatureLabel) TextView mTemperatureLabel;
+//    @BindView(R.id.humidityValue) TextView mHumidityValue;
+//    @BindView(R.id.precipValue) TextView mPrecipValue;
+//    @BindView(R.id.summaryLabel) TextView mSummaryLabel;
+//    @BindView(R.id.iconImageView) ImageView mIconImageView;
+
+    private TextView mTimeLabel;
+    private TextView mTemperatureLabel;
+    private TextView mHumidityValue;
+    private TextView mPrecipValue;
+    private TextView mSummaryLabel;
+    private ImageView mIconImageView;
+    private ImageView mRefreshImageView;
+    private ProgressBar mProgressBar;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+//        ButterKnife.bind(this);
 
+        mTimeLabel = (TextView) findViewById(R.id.timeLabel);
+        mTemperatureLabel = (TextView) findViewById(R.id.temperatureLabel);
+        mHumidityValue = (TextView) findViewById(R.id.humidityValue);
+        mPrecipValue = (TextView) findViewById(R.id.precipValue);
+        mSummaryLabel = (TextView) findViewById(R.id.summaryLabel);
+        mIconImageView = (ImageView) findViewById(R.id.iconImageView);
+        mRefreshImageView = (ImageView) findViewById(R.id.refreshImageView);
+        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
+
+        mProgressBar.setVisibility(View.INVISIBLE);
+
+        final double latitude = 37.8267;
+        final double longitude = -122.4233;
+
+        mRefreshImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getForecast(latitude, longitude);
+            }
+        });
+
+        getForecast(latitude, longitude);
+
+        Log.d(TAG, "Main UI Code is running.");
+    }
+
+    private void getForecast(double latitude, double longitude) {
         String apiKey = "466ce6c0f5b6e759d3997c01ea6af65f";
-        double latitude = 37.8267;
-        double longitude = -122.4233;
 
         String forecastURL = "https://api.darksky.net/forecast/" + apiKey + "/" + latitude + "," + longitude;
 
         if(isNetworkAvailable()) {
+            toggleRefresh();
+
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()
                     .url(forecastURL)
@@ -46,11 +96,25 @@ public class MainActivity extends AppCompatActivity {
             call.enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            toggleRefresh();
+                        }
+                    });
 
+                    alertUserAboutError();
                 }
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            toggleRefresh();
+                        }
+                    });
+
                     try {
 
                         String jsonData = response.body().string();
@@ -58,6 +122,12 @@ public class MainActivity extends AppCompatActivity {
 
                         if (response.isSuccessful()) {
                             mCurrentWeather = getCurrentDetails(jsonData);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    updateDisplay();
+                                }
+                            });
                         } else {
                             alertUserAboutError();
                         }
@@ -75,8 +145,28 @@ public class MainActivity extends AppCompatActivity {
         {
             Toast.makeText(this, "Network is unavailable!", Toast.LENGTH_LONG).show();
         }
+    }
 
-        Log.d(TAG, "Main UI Code is running.");
+    private void toggleRefresh() {
+        if(mProgressBar.getVisibility() == View.INVISIBLE) {
+            mProgressBar.setVisibility(View.VISIBLE);
+            mRefreshImageView.setVisibility(View.INVISIBLE);
+        } else {
+            mProgressBar.setVisibility(View.INVISIBLE);
+            mRefreshImageView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void updateDisplay() {
+        mTemperatureLabel.setText(mCurrentWeather.getTemperature() + "");
+        mTimeLabel.setText("At " + mCurrentWeather.getFormattedTime() + " it will be");
+        mHumidityValue.setText(mCurrentWeather.getHumidity() + "");
+        mPrecipValue.setText(mCurrentWeather.getPrecipChance() + "%");
+        mSummaryLabel.setText(mCurrentWeather.getSummary());
+
+        Drawable drawable = getResources().getDrawable(mCurrentWeather.getIconId());
+        mIconImageView.setImageDrawable(drawable);
+
     }
 
     private CurrentWeather getCurrentDetails(String jsonData) throws JSONException {
