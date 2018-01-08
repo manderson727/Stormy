@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Stormy</string>
     <string name="error_title">Oops! Sorry!</string>
+    <string name="no_daily_forecast_data">There is no data to display.</string>
 </resources>

@@ -8,8 +8,7 @@
     android:paddingLeft="32dp"
     android:paddingRight="32dp"
     android:paddingTop="16dp"
-    android:paddingBottom="16dp"
-    android:background="#FC970B"
+    android:background="@drawable/bg_gradient"
     tools:context="com.manderson.stormy.ui.MainActivity">
 
 
@@ -154,5 +153,33 @@
         android:layout_alignBottom="@+id/refreshImageView"
         android:layout_alignEnd="@+id/refreshImageView"
         android:layout_alignRight="@+id/refreshImageView" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/hourlyButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#40FFFFFF"
+            android:text="Hourly"
+            android:textColor="#FFFFFFFF" />
+
+        <Button
+            android:id="@+id/dailyButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
+            android:layout_weight="1"
+            android:background="#40FFFFFF"
+            android:text="7 Day"
+            android:textColor="#FFFFFFFF" />
+    </LinearLayout>
 
 </RelativeLayout>

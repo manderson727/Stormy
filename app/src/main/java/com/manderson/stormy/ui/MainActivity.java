@@ -1,6 +1,7 @@
 package com.manderson.stormy.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -8,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -34,6 +36,7 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = MainActivity.class.getSimpleName();
+    public static final String DAILY_FORECAST = "DAILY_FORECAST";
 
     private Forecast mForecast;
 
@@ -52,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView mIconImageView;
     private ImageView mRefreshImageView;
     private ProgressBar mProgressBar;
+    private Button mDailyButton;
 
 
     @Override
@@ -68,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         mIconImageView = (ImageView) findViewById(R.id.iconImageView);
         mRefreshImageView = (ImageView) findViewById(R.id.refreshImageView);
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
+        mDailyButton = (Button) findViewById(R.id.dailyButton);
 
         mProgressBar.setVisibility(View.INVISIBLE);
 
@@ -81,9 +86,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        mDailyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startDailyActivity();
+            }
+        });
+
         getForecast(latitude, longitude);
 
         Log.d(TAG, "Main UI Code is running.");
+    }
+
+    private void startDailyActivity() {
+        Intent intent = new Intent(this, DailyForecastActivity.class);
+        intent.putExtra(DAILY_FORECAST, mForecast.getDailyForecast());
+        startActivity(intent);
     }
 
     private void getForecast(double latitude, double longitude) {
@@ -189,7 +207,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Day[] getDailyForecast(String jsonData) throws JSONException {
-        return new Day[0];
+        JSONObject forecast = new JSONObject(jsonData);
+        String timezone = forecast.getString("timezone");
+        JSONObject daily = forecast.getJSONObject("daily");
+        JSONArray data = daily.getJSONArray("data");
+
+        Day[] days = new Day[data.length()];
+
+        for(int i = 0; i < data.length(); i++)
+        {
+            JSONObject jsonDay = data.getJSONObject(i);
+            Day day = new Day();
+
+            day.setSummary(jsonDay.getString("summary"));
+            day.setIcon(jsonDay.getString("icon"));
+            day.setTemperatureMax(jsonDay.getDouble("temperatureMax"));
+            day.setTime(jsonDay.getLong("time"));
+            day.setTimezone(timezone);
+
+            days[i] = day;
+        }
+
+        return days;
+
     }
 
     private Hour[] getHourlyForecast(String jsonData) throws JSONException {
