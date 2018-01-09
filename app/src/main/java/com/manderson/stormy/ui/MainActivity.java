@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = MainActivity.class.getSimpleName();
     public static final String DAILY_FORECAST = "DAILY_FORECAST";
+    public static final String HOURLY_FORECAST = "HOURLY_FORECAST";
 
     private Forecast mForecast;
 
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView mRefreshImageView;
     private ProgressBar mProgressBar;
     private Button mDailyButton;
+    private Button mHourlyButton;
 
 
     @Override
@@ -73,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
         mRefreshImageView = (ImageView) findViewById(R.id.refreshImageView);
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         mDailyButton = (Button) findViewById(R.id.dailyButton);
+        mHourlyButton = (Button) findViewById(R.id.hourlyButton);
 
         mProgressBar.setVisibility(View.INVISIBLE);
 
@@ -93,6 +96,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        mHourlyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startHourlyActivity();
+            }
+        });
+
         getForecast(latitude, longitude);
 
         Log.d(TAG, "Main UI Code is running.");
@@ -101,6 +111,12 @@ public class MainActivity extends AppCompatActivity {
     private void startDailyActivity() {
         Intent intent = new Intent(this, DailyForecastActivity.class);
         intent.putExtra(DAILY_FORECAST, mForecast.getDailyForecast());
+        startActivity(intent);
+    }
+
+    private void startHourlyActivity() {
+        Intent intent = new Intent(this, HourlyForecastActivity.class);
+        intent.putExtra(HOURLY_FORECAST, mForecast.getHourlyForecast());
         startActivity(intent);
     }
 

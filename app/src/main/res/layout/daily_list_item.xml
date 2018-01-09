@@ -20,6 +20,20 @@
         android:layout_alignParentTop="true"
         app:srcCompat="@drawable/bg_temperature" />
 
+    <TextView
+        android:id="@+id/temperatureLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/circleImageView"
+        android:layout_alignBottom="@+id/circleImageView"
+        android:layout_alignStart="@+id/circleImageView"
+        android:layout_alignLeft="@+id/circleImageView"
+        android:layout_alignRight="@+id/circleImageView"
+        android:layout_alignEnd="@+id/circleImageView"
+        android:gravity="center"
+        android:textColor="#F25019" />
+        tools:text="100" />
+
     <ImageView
         android:id="@+id/iconImageView"
         android:layout_width="wrap_content"
@@ -45,16 +59,4 @@
         android:textSize="20sp"
         android:paddingLeft="10dp"
         tools:text="Wednesday" />
-
-    <TextView
-        android:id="@+id/temperatureLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/circleImageView"
-        android:layout_alignBottom="@+id/circleImageView"
-        android:layout_alignLeft="@+id/circleImageView"
-        android:layout_alignRight="@+id/circleImageView"
-        android:gravity="center"
-        android:textColor="#F25019"
-        tools:text="100" />
 </RelativeLayout>

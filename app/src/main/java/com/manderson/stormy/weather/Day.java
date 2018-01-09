@@ -83,4 +83,29 @@ public class Day implements Parcelable {
         dest.writeString(mIcon);
         dest.writeString(mTimezone);
     }
+
+    //The order of data is important
+    private Day(Parcel in) {
+        mTime = in.readLong();
+        mSummary = in.readString();
+        mTemperatureMax = in.readDouble();
+        mIcon = in.readString();
+        mTimezone = in.readString();
+    }
+
+    public Day() {
+
+    }
+
+    public static final Creator<Day> CREATOR = new Creator<Day>() {
+        @Override
+        public Day createFromParcel(Parcel source) {
+            return new Day(source);
+        }
+
+        @Override
+        public Day[] newArray(int size) {
+            return new Day[size];
+        }
+    };
 }
