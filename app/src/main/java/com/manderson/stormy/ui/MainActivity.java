@@ -211,6 +211,28 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private Current getCurrentDetails(String jsonData) throws JSONException {
+        JSONObject forecast = new JSONObject(jsonData);
+        String timezone = forecast.getString("timezone");
+        Log.i(TAG, "FROM JSON: " + timezone);
+
+        JSONObject currently = forecast.getJSONObject("currently");
+
+        Current current = new Current();
+        current.setHumidity(currently.getDouble("humidity"));
+        current.setTime(currently.getLong("time"));
+        current.setIcon(currently.getString("icon"));
+        current.setPrecipChance(currently.getDouble("precipProbability"));
+        current.setSummary(currently.getString("summary"));
+        current.setTemperature(currently.getDouble("temperature"));
+        current.setTimeZone(timezone);
+
+        Log.d(TAG, current.getFormattedTime());
+
+
+        return current;
+    }
+
     private Forecast parseForecastDetails(String jsonData) throws JSONException {
         Forecast forecast = new Forecast();
 
@@ -270,28 +292,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return hours;
-    }
-
-    private Current getCurrentDetails(String jsonData) throws JSONException {
-        JSONObject forecast = new JSONObject(jsonData);
-        String timezone = forecast.getString("timezone");
-        Log.i(TAG, "FROM JSON: " + timezone);
-
-        JSONObject currently = forecast.getJSONObject("currently");
-
-        Current current = new Current();
-        current.setHumidity(currently.getDouble("humidity"));
-        current.setTime(currently.getLong("time"));
-        current.setIcon(currently.getString("icon"));
-        current.setPrecipChance(currently.getDouble("precipProbability"));
-        current.setSummary(currently.getString("summary"));
-        current.setTemperature(currently.getDouble("temperature"));
-        current.setTimeZone(timezone);
-
-        Log.d(TAG, current.getFormattedTime());
-
-
-        return current;
     }
 
     private boolean isNetworkAvailable() {
